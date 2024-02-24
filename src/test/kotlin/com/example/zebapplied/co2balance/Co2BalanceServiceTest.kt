@@ -22,17 +22,17 @@ class Co2BalanceServiceTest : DescribeSpec({
   val service = Co2BalanceService(energySourceClient, scopeService)
 
   describe("calculateCo2Balance") {
-    val expecetedName = "1.1.1"
+    val description = "description"
     val energySourceId = "1"
-    val expectedEnergySourceName = "energySourceName1"
-    val request = Co2BalanceRequest(name = expecetedName, energySourceId = energySourceId, energyUsage = 1.5f, emissionFactor = 2f)
-    val energySources = listOf(EnergySource(energySourceId = energySourceId, scopeId = "SCOPE_2_1", name = expectedEnergySourceName, conversionFactor = 1500f, emissionFactor = 3f))
+    val energySourceName = "energySourceName1"
+    val request = Co2BalanceRequest(description = description, energySourceId = energySourceId, energyUsage = 1.5f, emissionFactor = 2f)
+    val energySources = listOf(EnergySource(energySourceId = energySourceId, scopeId = "SCOPE_2_1", name = energySourceName, conversionFactor = 1500f, emissionFactor = 3f))
 
-    it("should return correct name and energy source name") {
+    it("should return correct name and label") {
       val actual = service.calculateCo2Balance(request, energySources, emptyList())
 
-      actual.name shouldBe expecetedName
-      actual.energySourceName shouldBe expectedEnergySourceName
+      actual.name shouldBe description
+      actual.label shouldBe "$energySourceName $description"
     }
 
     it("should calculate energy correctly") {
@@ -42,7 +42,7 @@ class Co2BalanceServiceTest : DescribeSpec({
     }
 
     it("should calculate co2 correctly if request emmissionFactor is NOT set") {
-      val requestWithoutEmissionFactor = Co2BalanceRequest(name = expecetedName, energySourceId = energySourceId, energyUsage = 1.5f, emissionFactor = null)
+      val requestWithoutEmissionFactor = Co2BalanceRequest(description = description, energySourceId = energySourceId, energyUsage = 1.5f, emissionFactor = null)
 
       val actual = service.calculateCo2Balance(requestWithoutEmissionFactor, energySources, emptyList())
 
@@ -70,10 +70,10 @@ class Co2BalanceServiceTest : DescribeSpec({
     val branch11Scope = ScopeInternal("SCOPE_1_1", "1.1", "label1", parent = root1Scope)
     val branch12Scope = ScopeInternal("SCOPE_1_2", "1.2", "label2", root1Scope)
     val branch21Scope = ScopeInternal("SCOPE_2_1", "2.1", "label3", root2Scope)
-    val leave111Balance = Co2BalanceInternal(name = "1.1.1", energySourceName = "energySourceName1", energy = 1f, co2 = 2f, scope = branch11Scope)
-    val leave112Balance = Co2BalanceInternal(name = "1.1.2", energySourceName = "energySourceName1", energy = 3f, co2 = 4f, scope = branch11Scope)
-    val leave121Balance = Co2BalanceInternal(name = "1.2.1", energySourceName = "energySourceName2", energy = 5f, co2 = 6f, scope = branch12Scope)
-    val leave211Balance = Co2BalanceInternal(name = "2.1.1", energySourceName = "energySourceName3", energy = 7f, co2 = 8f, scope = branch21Scope)
+    val leave111Balance = Co2BalanceInternal(name = "1.1.1", energy = 1f, co2 = 2f, scope = branch11Scope)
+    val leave112Balance = Co2BalanceInternal(name = "1.1.2", energy = 3f, co2 = 4f, scope = branch11Scope)
+    val leave121Balance = Co2BalanceInternal(name = "1.2.1", energy = 5f, co2 = 6f, scope = branch12Scope)
+    val leave211Balance = Co2BalanceInternal(name = "2.1.1", energy = 7f, co2 = 8f, scope = branch21Scope)
     val leaves = listOf(leave111Balance, leave112Balance, leave121Balance, leave211Balance)
 
     it("should build tree correctly") {
@@ -126,5 +126,30 @@ class Co2BalanceServiceTest : DescribeSpec({
       branch21.co2 shouldBe 8f
     }
 
+  }
+
+  describe("convertTreeToCo2Balance") {
+    it("should convert it correctly") {
+
+      val leave111Request = Co2BalanceRequest(description = "description1", energySourceId = "1", energyUsage = 1.5f, emissionFactor = 2f)
+      val leave112Request = Co2BalanceRequest(description = "description1", energySourceId = "1", energyUsage = 1.5f, emissionFactor = 2f)
+      val request = listOf(leave111Request, leave112Request)
+      val leave111 = Co2BalanceInternal(name = "1.1.1", energy = 1f, co2 = 2f, scope = ScopeInternal("SCOPE_1_1", "1.1", "label1"), label = "leaveLabel111")
+      val leave112 = Co2BalanceInternal(name = "1.1.2", energy = 3f, co2 = 4f, scope = ScopeInternal("SCOPE_1_1", "1.1", "label1"), label = "leaveLabel112")
+      val branch11 = Co2BalanceInternal(name = "1.1", energy = 4f, co2 = 6f, scope = ScopeInternal("SCOPE_1_1", "1.1", "label1"), children = listOf(leave111, leave112))
+      val root1 = Co2BalanceInternal(name = "SCOPE_1", energy = 4f, co2 = 6f, scope = ScopeInternal("SCOPE_1", "Scope 1", "label1"), children = listOf(branch11))
+      val tree = listOf(root1)
+
+      val actual = service.convertTreeToCo2Balance(request, tree)
+
+      actual.size shouldBe 1
+      val actualRoot1 = actual.find { it.label == root1.scope.label }.shouldNotBeNull()
+      actualRoot1.children.size shouldBe 1
+      val actualBranch11 = actualRoot1.children.find { it.label == branch11.scope.label }.shouldNotBeNull()
+      actualBranch11.children.size shouldBe 2
+      actualBranch11.children.find { it.label == leave111.label}.shouldNotBeNull()
+      actualBranch11.children.find { it.label == leave112.label}.shouldNotBeNull()
+
+    }
   }
 })

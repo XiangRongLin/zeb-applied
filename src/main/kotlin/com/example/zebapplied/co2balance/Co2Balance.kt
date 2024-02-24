@@ -1,7 +1,6 @@
 package com.example.zebapplied.co2balance
 
 import com.example.zebapplied.scopehierarchy.ScopeInternal
-import com.fasterxml.jackson.annotation.JsonIgnore
 
 data class Co2Balance(
     val name: String,
@@ -18,9 +17,9 @@ data class Co2Balance(
 
 data class Co2BalanceInternal(
     val name: String,
-    val energySourceName: String,
     val energy: Float,
     val co2: Float,
-    val scope : ScopeInternal,
+    val scope: ScopeInternal,
+    val label: String? = null,
     val children: List<Co2BalanceInternal> = emptyList(),
 )
