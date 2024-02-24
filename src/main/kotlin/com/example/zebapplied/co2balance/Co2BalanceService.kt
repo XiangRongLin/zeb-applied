@@ -25,7 +25,7 @@ class Co2BalanceService(
   fun calculateCo2Balance(request: Co2BalanceRequest, energySources: List<EnergySource>, scopeHierarchies: List<ScopeInternal>): Co2BalanceInternal {
     val energySource = energySources.find { it.energySourceId == request.energySourceId }
         ?: throw IllegalArgumentException("Energy source with id ${request.energySourceId} not found")
-    val scope = scopeService.getParentScope(request.description, scopeHierarchies)
+    val scope = scopeService.getParentScope(energySource.scopeId, scopeHierarchies)
     val energyInKwh = request.energyUsage * energySource.conversionFactor
     val emmissionFactor = request.emissionFactor ?: energySource.emissionFactor
     return Co2BalanceInternal(

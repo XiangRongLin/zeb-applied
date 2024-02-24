@@ -1,0 +1,15 @@
+POST http://localhost:8080/co2balance
+Content-Type: application/json
+
+[
+  {
+    "description": "description1",
+    "energySourceId": "1000",
+    "energyUsage": 1000
+  },
+  {
+    "description": "description2",
+    "energySourceId": "1001",
+    "energyUsage": 2000
+  }
+]
