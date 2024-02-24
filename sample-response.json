@@ -1,0 +1,113 @@
+[
+  {
+    "name": "Scope 1",
+    "label": "Brenn-/Treibstoffe, Kältemittel, Prozessemissionen",
+    "energy": 124691.43,
+    "co2": 30.77,
+    "children": [
+      {
+        "name": "1.1",
+        "label": "Brennstoffe / Wärme",
+        "energy": 34593.18,
+        "co2": 9.83,
+        "children": [
+          {
+            "name": "1.1.1",
+            "label": "Heizöl leicht (Standort Berlin)",
+            "energy": 22671.80,
+            "co2": 6.44,
+            "children": []
+          },
+          {
+            "name": "1.1.2",
+            "label": "Heizöl leicht (Standort München)",
+            "energy": 11921.38,
+            "co2": 3.39,
+            "children": []
+          }
+        ]
+      },
+      {
+        "name": "1.2",
+        "label": "Treibstoffe für Mobilität/Flotte",
+        "energy": 90098.25,
+        "co2": 20.94,
+        "children": [
+          {
+            "name": "1.2.1",
+            "label": "Benzin (B APL 001)",
+            "energy": 90098.25,
+            "co2": 20.94,
+            "children": []
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Scope 2",
+    "label": "Bezogene Energien",
+    "energy": 10770.00,
+    "co2": 1.79,
+    "children": [
+      {
+        "name": "2.1",
+        "label": "Strom inkl. E-Flotte",
+        "energy": 10770.00,
+        "co2": 1.79,
+        "children": [
+          {
+            "name": "2.1.1",
+            "label": "Strommix (Deutschland) (Standort Ketsch)",
+            "energy": 3770.00,
+            "co2": 1.67,
+            "children": []
+          },
+          {
+            "name": "2.1.2",
+            "label": "Ökostrom aus Eigenerzeugung (erneuerbar) (Standort Sandhausen)",
+            "energy": 4000.00,
+            "co2": 0.00,
+            "children": []
+          },
+          {
+            "name": "2.1.3",
+            "label": "Andere Elektrizität (erneuerbar, eingekauft) (Standort Sandhausen)",
+            "energy": 3000.00,
+            "co2": 0.12,
+            "children": []
+          }
+        ]
+      },
+      {
+        "name": "2.2",
+        "label": "Fernwärme/-kälte",
+        "energy": 0.00,
+        "co2": 0.00,
+        "children": []
+      },
+      {
+        "name": "2.3",
+        "label": "Ferndampf",
+        "energy": 0.00,
+        "co2": 0.00,
+        "children": []
+      }
+    ]
+  },
+  {
+    "name": "Scope 3",
+    "label": "Vor- und nachgelagerte Wertschöpfungskette",
+    "energy": 0.00,
+    "co2": 0.00,
+    "children": [
+      {
+        "name": "3.6",
+        "label": "Dienstreisen",
+        "energy": 0.00,
+        "co2": 0.00,
+        "children": []
+      }
+    ]
+  }
+]
