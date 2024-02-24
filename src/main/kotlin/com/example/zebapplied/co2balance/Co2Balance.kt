@@ -19,9 +19,7 @@ data class Co2Balance(
 data class Co2BalanceInternal(
     val name: String,
     val energySourceName: String,
-    // TODO format to 2 decimal places
     val energy: Float,
-    // TODO format to 2 decimal places
     val co2: Float,
     val scope : ScopeInternal,
     val children: List<Co2BalanceInternal> = emptyList(),

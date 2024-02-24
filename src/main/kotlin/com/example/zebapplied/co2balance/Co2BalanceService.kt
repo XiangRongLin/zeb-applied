@@ -2,21 +2,20 @@ package com.example.zebapplied.co2balance
 
 import com.example.zebapplied.energysource.EnergySource
 import com.example.zebapplied.energysource.EnergySourceClient
-import com.example.zebapplied.scopehierarchy.ScopeClient
+import com.example.zebapplied.scopehierarchy.ScopeService
 import com.example.zebapplied.scopehierarchy.ScopeInternal
 import org.springframework.stereotype.Service
 
 @Service
 class Co2BalanceService(
     private val energySourceClient: EnergySourceClient,
-    private val scopeClient: ScopeClient
+    private val scopeService: ScopeService
 ) {
 
-  private val scopeRegex = Regex("^\\d+\\.\\d")
 
   fun calculateCo2Balance(requests: List<Co2BalanceRequest>): List<Co2Balance> {
     val energySources = energySourceClient.getEnergySources()
-    val scopeHierarchies = scopeClient.getScopes()
+    val scopeHierarchies = scopeService.getScopes()
 
     val leaves = requests.map { calculateCo2Balance(it, energySources, scopeHierarchies)}
     return buildCo2BalanceTree(leaves)
@@ -61,7 +60,7 @@ class Co2BalanceService(
   fun calculateCo2Balance(request: Co2BalanceRequest, energySources: List<EnergySource>, scopeHierarchies: List<ScopeInternal>): Co2BalanceInternal {
     val energySource = energySources.find { it.energySourceId == request.energySourceId }
         ?: throw IllegalArgumentException("Energy source with id ${request.energySourceId} not found")
-    val scope = getParentScope(request.name, scopeHierarchies)
+    val scope = scopeService.getParentScope(request.name, scopeHierarchies)
     val energyInKwh = request.energyUsage * energySource.conversionFactor
     val emmissionFactor = request.emissionFactor ?: energySource.emissionFactor
     return Co2BalanceInternal(
@@ -71,10 +70,5 @@ class Co2BalanceService(
         co2 = energyInKwh * emmissionFactor / 1000,
         scope = scope
     )
-  }
-
-  fun getParentScope(name: String, scopes: List<ScopeInternal>): ScopeInternal {
-    return scopes.find { it.name == scopeRegex.find(name)?.value }
-        ?: throw IllegalArgumentException("No parent scope found for $name")
   }
 }
