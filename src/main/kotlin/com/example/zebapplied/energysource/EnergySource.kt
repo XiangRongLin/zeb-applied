@@ -4,6 +4,6 @@ data class EnergySource(
     val energySourceId: String,
     val scopeId: String,
     val name: String,
-    val conversionFactor: String,
-    val emissionFactor: String,
+    val conversionFactor: Float,
+    val emissionFactor: Float,
 )

@@ -12,3 +12,10 @@ data class SubScope(
     val name: String,
     val label: String
 )
+
+data class ScopeInternal(
+    val id: String,
+    val name: String,
+    val label: String,
+    val parent: ScopeInternal? = null
+)

@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service
 @Service
 class EnergySourceClientImpl : EnergySourceClient{
 
-  override fun getEnergySource(id: String): EnergySource {
+  override fun getEnergySources(): List<EnergySource> {
     TODO("Not yet implemented")
   }
 }
